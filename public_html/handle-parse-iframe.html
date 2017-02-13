@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Content-Style-Type" content="text/css">
+    <title>Parse App: </title>
+    <style type="text/css">
+      html, body {
+        height: 100%; margin:0;
+      }
+      #custom_frame{
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+    </style>
+
+    <script type="text/javascript">
+      var BASE_URL = 'http://localhost:1337/parse'; 
+      //REPLACE THIS BASE_URL - provide the url which hosts your actual parse api and not your Public Url.
+      //For example, you might be hosting api's on http://api.example.com/parse and you do not want user to see this url in emails.
+      // then the BASE_URL = http://example.com/parse which host this page and help rendering the http://api.example.com pages.
+      
+        function onLoadPage() {
+            var uri = window.location.href;
+            var link = /link=([^]+)/.exec(uri)[1];
+            var uri_dec = decodeURIComponent(link);
+
+            uri_dec = uri_dec.replace(/&/,'?');
+
+            if(uri_dec.indexOf('request_password_reset') !== -1){
+              //Constructing url for forgot password
+              var parameters = uri_dec.split('/');
+              parameters[3] = parameters[3].replace(/request_password_reset/g,'choose_password');
+
+              uri_dec = BASE_URL + '/apps/' + parameters[3] + '&id=' + parameters[2] ;
+            }else{
+              //Constructing url for Verifying email or any other pages
+              uri_dec = BASE_URL + uri_dec;
+            }
+            
+            document.getElementById('custom_frame').src = uri_dec;
+        }
+    </script>
+</head>
+
+<body onload="onLoadPage()">
+    <iframe id="custom_frame" src=""></iframe>
+</body>
+
+</html>
